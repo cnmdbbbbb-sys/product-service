@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: product-service-gitops
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/cnmdbbbbb-sys/product-service.git' # 你的仓库
+    targetRevision: HEAD
+    path: .                     # 告诉 ArgoCD YAML 文件在仓库的根目录下
+  destination:
+    server: 'https://kubernetes.default.svc' # 部署到当前的 Kind 集群
+    namespace: prod-env
+  syncPolicy:
+    automated:                  # 🚀 开启全自动化同步！
+      prune: true
+      selfHeal: true
