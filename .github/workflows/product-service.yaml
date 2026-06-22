@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: prod-env
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      # 🎯 核心联动：告诉 K8s 拉取私有镜像时，使用刚才创建的特权钥匙
+      imagePullSecrets:
+      - name: aws-ecr-secret
+      containers:
+      - name: product-app
+        # 🎯 镜像源切换：彻底放弃 Nginx 占位符，直接拉取你在 AWS ECR 里的企业级镜像
+        image: <你的AWS账户ID>.dkr.ecr.us-east-1.amazonaws.com/product-service:latest
+        ports:
+        - containerPort: 80
